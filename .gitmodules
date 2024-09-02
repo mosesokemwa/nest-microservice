@@ -1,0 +1,15 @@
+[submodule "auth"]
+	path = auth
+	url = git@github.com:mosesokemwa/auth.git
+
+[submodule "users"]
+	path = users
+	url = git@github.com:mosesokemwa/users.git
+
+[submodule "jobs"]
+	path = jobs
+	url = git@github.com:mosesokemwa/jobs.git
+
+[submodule "notification"]
+	path = notification
+	url = git@github.com:mosesokemwa/notification.git
