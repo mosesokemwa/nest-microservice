@@ -1,0 +1,98 @@
+services:
+  auth-service:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    ports:
+      - "9001:9001"
+    env_file:
+      - ./auth/.env.docker
+    volumes:
+      - ./auth:/app/auth
+      - /app/auth/node_modules
+    restart: on-failure
+    networks:
+      - backend
+    logging:
+      driver: fluentd
+      options:
+        fluentd-async: "true"
+        fluentd-address: localhost:24224
+        tag: auth-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  # jobs-service:
+  #   build:
+  #     context: ./jobs
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "9002:9002"
+  #   env_file:
+  #     - ./jobs/.env.docker
+  #   volumes:
+  #     - ./jobs:/app/jobs
+  #     - /app/jobs/node_modules
+  #   restart: on-failure
+  #   networks:
+  #     - backend
+  #   logging:
+  #     driver: fluentd
+  #     options:
+  #       fluentd-async: "true"
+  #       fluentd-address: localhost:24224
+  #       tag: jobs-service
+
+  # notification-service:
+  #   build:
+  #     context: ./notification
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "9004:9004"
+  #   env_file:
+  #     - ./notification/.env.docker
+  #   volumes:
+  #     - ./notification:/app/notification
+  #     - /app/notification/node_modules
+  #   restart: on-failure
+  #   networks:
+  #     - backend
+  #   logging:
+  #     driver: fluentd
+  #     options:
+  #       fluentd-async: "true"
+  #       fluentd-address: localhost:24224
+  #       tag: notification-service
+
+  # kong:
+  #   build:
+  #     context: ./kong
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8000:8000"
+  #     - "8443:8443"
+  #     - "8001:8001"
+  #     - "8444:8444"
+  #   restart: unless-stopped
+  #   networks:
+  #     - backend
+  #   logging:
+  #     driver: fluentd
+  #     options:
+  #       fluentd-async: "true"
+  #       fluentd-address: localhost:24224
+  #       tag: kong-gateway
+  #   healthcheck:
+  #     test: ["CMD", "kong", "health"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 10
+
+networks:
+  backend:
+    name: backend
+    external: true
